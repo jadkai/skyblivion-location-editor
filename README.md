@@ -9,7 +9,7 @@ This tool relies on data exported from xEdit in a specific format. Specifically,
 
 This tool **DOES NOT** edit ESP, ESM, or ESL files. It simply dumps data out into a format that is easy to work with in basic xEdit scripts for applying those changes.
 
-While you _can_ save your work and pick up again where you left off, this tool also **DOES NOT** read ESP, ESM, or ESL files. It relies entirely on the files it generates for resuming work. This also means that you would have to generate the files it's expecting in the correct format in order to edit the location hierarchy from an existing mod that you'd never used this tool on before.
+While you _can_ save your work and pick up again where you left off, this tool also **DOES NOT** read ESP, ESM, or ESL files. It relies entirely on the files it generates for resuming work. This also means that you would have to generate the files it's expecting in the correct format in order to edit the location hierarchy from an existing mod that you'd never used this tool on before, where the mod already had some of its location hierarchy set up that you didn't want to lose.
 
 # Tool capabilities
 
