@@ -60,6 +60,15 @@ namespace LocationParentEditor
       }
     };
 
+    public static KeywordSet DungeonSet = new KeywordSet
+    {
+      Name = "Dungeon",
+      Keywords = new string[]
+      {
+        LocTypeDungeon
+      }
+    };
+
     public static KeywordSet FarmSet = new KeywordSet
     {
       Name = "Farm",
