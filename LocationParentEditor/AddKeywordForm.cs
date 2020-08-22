@@ -26,14 +26,27 @@ namespace LocationParentEditor
 
     private void okButton_Click(object sender, EventArgs e)
     {
-      this.SelectedKeywords = new string[this.keywordListBox.SelectedItems.Count];
-      this.keywordListBox.SelectedItems.CopyTo(this.SelectedKeywords, 0);
-      this.DialogResult = DialogResult.OK;
+      EndDialogWithKeywords();
     }
 
     private void cancelButton_Click(object sender, EventArgs e)
     {
       this.DialogResult = DialogResult.Cancel;
+    }
+
+    private void keywordListBox_MouseDoubleClick(object sender, MouseEventArgs e)
+    {
+      if (e.Button == MouseButtons.Left && this.keywordListBox.SelectedItems.Count != 0)
+      {
+        EndDialogWithKeywords();
+      }
+    }
+
+    private void EndDialogWithKeywords()
+    {
+      this.SelectedKeywords = new string[this.keywordListBox.SelectedItems.Count];
+      this.keywordListBox.SelectedItems.CopyTo(this.SelectedKeywords, 0);
+      this.DialogResult = DialogResult.OK;
     }
   }
 }

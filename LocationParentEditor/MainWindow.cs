@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -124,22 +125,76 @@ namespace LocationParentEditor
 
     const string LocFormIdForCellFile = "cellLocFormIdMapping.txt";
 
+    /// <summary>
+    /// File name where editor IDs for locations that have keywords assigned
+    /// are stored. Corresponds to the file identified by
+    /// KeywordsForSetKeywordsFile. Line x in KeywordsForSetKeywordsFile is a
+    /// keyword that should be assigned to the location whose editor ID is
+    /// stored at line x of this file.
+    /// 
+    /// Keywords and locations are a many-to-many relationship, so each editor
+    /// ID can appear multiple times in this file.
+    /// </summary>
+
     const string LocEdidsForSetKeywordsFile = "locEdidsForSetKeywords.txt";
+
+    /// <summary>
+    /// File name where form IDs for keywords that are assigned to locations
+    /// are stored. Corresponds to the file identified by
+    /// LocEdidsForSetKeywordsFile. Line x in LocEdidsForSetKeywordsFile is a
+    /// location that should have the keyword whose form ID is at line x of
+    /// this file.
+    /// 
+    /// Keywords and locations are a many-to-many relationship, so each
+    /// keyword form ID can appear multiple times in this file.
+    /// </summary>
+
     const string KeywordsForSetKeywordsFile = "keywordFormIdsForSetKeywords.txt";
 
     public MainWindow()
     {
       InitializeComponent();
 
+      AddKeywordSetContextMenuItem(KeywordSets.AyleidRuinSet);
+      AddKeywordSetContextMenuItem(KeywordSets.CaveDungeonSet);
       AddKeywordSetContextMenuItem(KeywordSets.CitySet);
       AddKeywordSetContextMenuItem(KeywordSets.CityWithInnSet);
+      AddKeywordSetContextMenuItem(KeywordSets.DungeonSet);
       AddKeywordSetContextMenuItem(KeywordSets.FarmSet);
+      AddKeywordSetContextMenuItem(KeywordSets.FightersGuild);
       AddKeywordSetContextMenuItem(KeywordSets.FortSet);
       AddKeywordSetContextMenuItem(KeywordSets.HouseSet);
       AddKeywordSetContextMenuItem(KeywordSets.InnSet);
       AddKeywordSetContextMenuItem(KeywordSets.JailSet);
+      AddKeywordSetContextMenuItem(KeywordSets.MagesGuild);
+      AddKeywordSetContextMenuItem(KeywordSets.Store);
+      AddKeywordSetContextMenuItem(KeywordSets.StoreWithBed);
+      AddKeywordSetContextMenuItem(KeywordSets.TempleSet);
       AddKeywordSetContextMenuItem(KeywordSets.TownSet);
       AddKeywordSetContextMenuItem(KeywordSets.TownWithInnSet);
+    }
+
+
+    /// <summary>
+    /// Handles clicks of the "add keywords" context menu item on the context
+    /// menu for the flat location list.
+    /// </summary>
+
+    private void addKeywordsToFlatListLoc_Click(object sender, EventArgs e)
+    {
+      if (this.locListBox.SelectedItems.Count > 0)
+      {
+        using (var addKeywordForm = new AddKeywordForm(this.keywordList))
+        {
+          if (addKeywordForm.ShowDialog() == DialogResult.OK)
+          {
+            foreach (string selectedLoc in this.locListBox.SelectedItems)
+            {
+              AddKeywordsToLocation(selectedLoc, addKeywordForm.SelectedKeywords);
+            }
+          }
+        }
+      }
     }
 
     /// <summary>
@@ -148,16 +203,30 @@ namespace LocationParentEditor
 
     private void addKeywordMenuItem_Click(object sender, EventArgs e)
     {
-      var selectedLoc = this.locTree.SelectedNode?.Text;
-
-      if (selectedLoc != null)
+      if (this.selectedLoc != null)
       {
-        var addKeywordForm = new AddKeywordForm(this.keywordList);
-
-        if (addKeywordForm.ShowDialog() == DialogResult.OK)
+        using (var addKeywordForm = new AddKeywordForm(this.keywordList))
         {
-          AddKeywordsToLocation(selectedLoc, addKeywordForm.SelectedKeywords);
+          if (addKeywordForm.ShowDialog() == DialogResult.OK)
+          {
+            AddKeywordsToLocation(this.selectedLoc, addKeywordForm.SelectedKeywords);
+          }
         }
+      }
+    }
+
+    /// <summary>
+    /// Handles clicks of the "delete keyword" context menu item.
+    /// </summary>
+
+    private void deleteKeywordToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      if (this.selectedLoc != null)
+      {
+        var selectedKeywords = new string[this.keywordListBox.SelectedItems.Count];
+        this.keywordListBox.SelectedItems.CopyTo(selectedKeywords, 0);
+        Debug.Assert(selectedKeywords != null);
+        RemoveKeywordsFromLocation(this.selectedLoc, selectedKeywords);
       }
     }
 
@@ -181,6 +250,25 @@ namespace LocationParentEditor
     private void filterTextBox_TextChanged(object sender, EventArgs e)
     {
       UpdateFiltering();
+    }
+
+    /// <summary>
+    /// Handles mouse clicks for the keyword list. Handled for context menu.
+    /// </summary>
+    
+    private void keywordListBox_MouseDown(object sender, MouseEventArgs e)
+    {
+      if (e.Button == MouseButtons.Right)
+      {
+        int clickedIndex = this.keywordListBox.IndexFromPoint(e.Location);
+
+        if (clickedIndex != -1 && !this.keywordListBox.SelectedIndices.Contains(clickedIndex))
+        {
+          this.keywordListBox.SelectedIndex = clickedIndex;
+        }
+
+        this.keywordListContextMenu.Show(this.keywordListBox.PointToScreen(e.Location));
+      }
     }
 
     /// <summary>
@@ -261,6 +349,28 @@ namespace LocationParentEditor
     }
 
     /// <summary>
+    /// Handles mouse clicks on the flat location list box.
+    /// </summary>
+
+    private void locListBox_MouseDown(object sender, MouseEventArgs e)
+    {
+      if (e.Button == MouseButtons.Right)
+      {
+        var clickedIndex = this.locListBox.IndexFromPoint(e.Location);
+
+        if (clickedIndex != -1)
+        {
+          if (!this.locListBox.SelectedIndices.Contains(clickedIndex))
+          {
+            this.locListBox.SelectedIndex = clickedIndex;
+          }
+
+          this.flatLocListContextMenu.Show(this.locListBox.PointToScreen(e.Location));
+        }
+      }
+    }
+
+    /// <summary>
     /// Handles mouse clicks on the location tree.
     /// </summary>
 
@@ -269,7 +379,7 @@ namespace LocationParentEditor
       if (e.Button == MouseButtons.Right)
       {
         this.locTree.SelectedNode = e.Node;
-        this.keywordContextMenu.Show(this.locTree.PointToScreen(e.Location));
+        this.addKeywordContextMenu.Show(this.locTree.PointToScreen(e.Location));
       }
     }
 
@@ -354,8 +464,38 @@ namespace LocationParentEditor
     {
       var menuItem = new ToolStripMenuItem(keywordSet.Name);
       menuItem.Click += (sender, e) => OnKeywordSetMenuItemClicked(keywordSet);
-      this.keywordContextMenu.Items.Add(menuItem);
+      this.addKeywordContextMenu.Items.Add(menuItem);
+
+      menuItem = new ToolStripMenuItem(keywordSet.Name);
+      menuItem.Click += (sender, e) => OnKeywordSetMenuItemClicked(keywordSet);
+      this.keywordListContextMenu.Items.Add(menuItem);
+
+      menuItem = new ToolStripMenuItem(keywordSet.Name);
+
+      menuItem.Click += (sender, e) =>
+      {
+        foreach (string selectedLoc in this.locListBox.SelectedItems)
+        {
+          AddKeywordsToLocation(selectedLoc, keywordSet.Keywords);
+        }
+      };
+
+      this.flatLocListContextMenu.Items.Add(menuItem);
     }
+
+    /// <summary>
+    /// Adds keywords to a location.
+    /// </summary>
+    /// 
+    /// <param name="locEdid">
+    /// The editor ID of the location that should get new keywords. Must not
+    /// be null.
+    /// </param>
+    /// 
+    /// <param name="keywords">
+    /// A sequence of keywords that should be added to the location. Must not
+    /// be null.
+    /// </param>
 
     private void AddKeywordsToLocation(string locEdid, IEnumerable<string> keywords)
     {
@@ -504,15 +644,15 @@ namespace LocationParentEditor
         var parents = File.ReadAllLines(ParentFormIdFile);
 
         foreach (var pair in edids.Zip(
-          parents, (edid, parent) => new { Edid = edid, Parent = parent }))
+          parents, (edid, parentFormId) => new { Edid = edid, ParentFormId = parentFormId }))
         {
-          if (!formIdToEdid.ContainsKey(pair.Parent))
+          if (!formIdToEdid.ContainsKey(pair.ParentFormId))
           {
-            MessageBox.Show("Couldn't find parent for FormID " + pair.Parent);
+            MessageBox.Show("Couldn't find parent for FormID " + pair.ParentFormId);
             continue;
           }
 
-          var parentEdid = formIdToEdid[pair.Parent];
+          var parentEdid = formIdToEdid[pair.ParentFormId];
           var parentNode = FindTreeItem(this.locTree.Nodes, parentEdid);
 
           SetParent(parentNode, new string[] { pair.Edid });
@@ -574,19 +714,40 @@ namespace LocationParentEditor
       try
       {
         var locEdids = File.ReadAllLines(LocEdidsForSetKeywordsFile);
-        var keywords = File.ReadAllLines(KeywordsForSetKeywordsFile);
+
+        var keywords = File.ReadAllLines(KeywordsForSetKeywordsFile)
+          .Select(keywordFormIdStr =>
+          {
+            var keywordSplit = keywordFormIdStr.Split(' ').Where(keywordFormId => !string.IsNullOrEmpty(keywordFormId));
+            return keywordSplit.ToArray();
+          });
 
         foreach (var pair in locEdids.Zip(keywords,
-          (locEdid, keyword) => new { LocEdid = locEdid, KeywordFormId = keyword }))
+          (locEdid, keywordFormIds) => new { LocEdid = locEdid, KeywordFormIds = keywordFormIds }))
         {
           var keywordList = this.locEdidToKeywordList[pair.LocEdid];
-          var keywordEdid = this.keywordFormIdToEdid[pair.KeywordFormId];
+          var keywordEdids = pair.KeywordFormIds.Select(formId => this.keywordFormIdToEdid[formId]);
 
-          if (!keywordList.Contains(keywordEdid))
+          foreach (var keywordEdid in keywordEdids)
           {
-            keywordList.Add(keywordEdid);
+            if (!keywordList.Contains(keywordEdid))
+            {
+              keywordList.Add(keywordEdid);
+            }
           }
         }
+
+        //foreach (var pair in locEdids.Zip(keywords,
+        //  (locEdid, keyword) => new { LocEdid = locEdid, KeywordFormId = keyword }))
+        //{
+        //  var keywordList = this.locEdidToKeywordList[pair.LocEdid];
+        //  var keywordEdid = this.keywordFormIdToEdid[pair.KeywordFormId];
+
+        //  if (!keywordList.Contains(keywordEdid))
+        //  {
+        //    keywordList.Add(keywordEdid);
+        //  }
+        //}
       }
       catch (Exception ex)
       {
@@ -603,6 +764,15 @@ namespace LocationParentEditor
       if (this.openFileDialog.ShowDialog() == DialogResult.OK)
       {
         var lines = File.ReadAllLines(this.openFileDialog.FileName).Select(line => line.Trim());
+
+        try
+        {
+          this.removedLocs.Clear();
+
+          this.removedLocs.AddRange(
+            File.ReadAllLines("RemovedLocations.txt").Select(line => line.Trim()));
+        }
+        catch { }; // don't care if this fails
 
         foreach (var line in lines)
         {
@@ -622,13 +792,16 @@ namespace LocationParentEditor
           var formId = splitLine[0];
           var edid = splitLine[1];
 
-          this.formIdToEdid[formId] = edid;
-          this.edidToFormId[edid] = formId;
-
-          if (!locList.Contains(edid))
+          if (!this.removedLocs.Contains(edid))
           {
-            locList.Add(edid);
-            this.locListBox.Items.Add(edid);
+            this.formIdToEdid[formId] = edid;
+            this.edidToFormId[edid] = formId;
+
+            if (!locList.Contains(edid))
+            {
+              locList.Add(edid);
+              this.locListBox.Items.Add(edid);
+            }
           }
         }
 
@@ -638,6 +811,13 @@ namespace LocationParentEditor
         {
           this.locTree.Nodes.Add(edid, edid);
           this.locEdidToKeywordList.Add(edid, new BindingList<string>());
+          this.locEdidToCells[edid] = string.Empty;
+        }
+
+        foreach (string edid in this.locList)
+        {
+          Debug.Assert(this.locEdidToCells.ContainsKey(edid));
+          Debug.Assert(this.locEdidToKeywordList.ContainsKey(edid)); 
         }
 
         this.ClearCellsNoPrompt();
@@ -683,6 +863,7 @@ namespace LocationParentEditor
         }
 
         this.locEdidToKeywordList.Remove(childEdid);
+        this.locList.Remove(childEdid);
         this.edidToFormId.Remove(childEdid);
         this.removedLocs.Add(childEdid);
       }
@@ -690,6 +871,29 @@ namespace LocationParentEditor
       parent.Nodes.Clear();
       this.locEdidToCells[parent.Text] = parentCells;
       this.cellsTextBox.Text = parentCells;
+    }
+
+    /// <summary>
+    /// Unassigns keywords from a location.
+    /// </summary>
+    /// 
+    /// <param name="locEdid">
+    /// The editor ID of the location whose keywords should be removed. Must
+    /// not be null.
+    /// </param>
+    /// 
+    /// <param name="keywords">
+    /// A sequence of keywords (editor IDs) to remove. Must not be null.
+    /// </param>
+
+    private void RemoveKeywordsFromLocation(string locEdid, IEnumerable<string> keywords)
+    {
+      var keywordList = this.locEdidToKeywordList[locEdid];
+
+      foreach (var keyword in keywords)
+      {
+        keywordList.Remove(keyword);
+      }
     }
 
     /// <summary>
@@ -760,11 +964,12 @@ namespace LocationParentEditor
           {
             foreach (var locEdid in this.locList)
             {
-              foreach (var keyword in this.locEdidToKeywordList[locEdid])
-              {
-                locEdidWriter.WriteLine(locEdid);
-                keywordWriter.WriteLine(this.keywordEdidToFormId[keyword]);
-              }
+              var keywords = string.Join(
+                " ",
+                this.locEdidToKeywordList[locEdid].Select(keywordEdid => this.keywordEdidToFormId[keywordEdid]));
+
+              locEdidWriter.WriteLine(locEdid);
+              keywordWriter.WriteLine(keywords);
             }
           }
         }

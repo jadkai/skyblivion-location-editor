@@ -47,10 +47,19 @@
       this.mergeChildrenToParentButton = new System.Windows.Forms.Button();
       this.label4 = new System.Windows.Forms.Label();
       this.keywordListBox = new System.Windows.Forms.ListBox();
-      this.keywordContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.addKeywordContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.addKeywordMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-      this.keywordContextMenu.SuspendLayout();
+      this.keywordListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.addKeywordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.deleteKeywordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+      this.flatLocListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.addKeywordsToFlatLocMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+      this.addKeywordContextMenu.SuspendLayout();
+      this.keywordListContextMenu.SuspendLayout();
+      this.flatLocListContextMenu.SuspendLayout();
       this.SuspendLayout();
       // 
       // locTree
@@ -109,6 +118,7 @@
       this.locListBox.Size = new System.Drawing.Size(467, 560);
       this.locListBox.Sorted = true;
       this.locListBox.TabIndex = 4;
+      this.locListBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.locListBox_MouseDown);
       // 
       // label2
       // 
@@ -218,14 +228,15 @@
       this.keywordListBox.Size = new System.Drawing.Size(405, 284);
       this.keywordListBox.Sorted = true;
       this.keywordListBox.TabIndex = 15;
+      this.keywordListBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.keywordListBox_MouseDown);
       // 
-      // keywordContextMenu
+      // addKeywordContextMenu
       // 
-      this.keywordContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+      this.addKeywordContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addKeywordMenuItem,
             this.toolStripSeparator1});
-      this.keywordContextMenu.Name = "keywordContextMenu";
-      this.keywordContextMenu.Size = new System.Drawing.Size(154, 32);
+      this.addKeywordContextMenu.Name = "addKeywordContextMenu";
+      this.addKeywordContextMenu.Size = new System.Drawing.Size(154, 32);
       // 
       // addKeywordMenuItem
       // 
@@ -238,6 +249,54 @@
       // 
       this.toolStripSeparator1.Name = "toolStripSeparator1";
       this.toolStripSeparator1.Size = new System.Drawing.Size(150, 6);
+      // 
+      // keywordListContextMenu
+      // 
+      this.keywordListContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addKeywordToolStripMenuItem,
+            this.deleteKeywordToolStripMenuItem,
+            this.toolStripSeparator2});
+      this.keywordListContextMenu.Name = "keywordListContextMenu";
+      this.keywordListContextMenu.Size = new System.Drawing.Size(156, 54);
+      // 
+      // addKeywordToolStripMenuItem
+      // 
+      this.addKeywordToolStripMenuItem.Name = "addKeywordToolStripMenuItem";
+      this.addKeywordToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+      this.addKeywordToolStripMenuItem.Text = "Add keyword...";
+      this.addKeywordToolStripMenuItem.Click += new System.EventHandler(this.addKeywordMenuItem_Click);
+      // 
+      // deleteKeywordToolStripMenuItem
+      // 
+      this.deleteKeywordToolStripMenuItem.Name = "deleteKeywordToolStripMenuItem";
+      this.deleteKeywordToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+      this.deleteKeywordToolStripMenuItem.Text = "Delete keyword";
+      this.deleteKeywordToolStripMenuItem.Click += new System.EventHandler(this.deleteKeywordToolStripMenuItem_Click);
+      // 
+      // toolStripSeparator2
+      // 
+      this.toolStripSeparator2.Name = "toolStripSeparator2";
+      this.toolStripSeparator2.Size = new System.Drawing.Size(152, 6);
+      // 
+      // flatLocListContextMenu
+      // 
+      this.flatLocListContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addKeywordsToFlatLocMenuItem,
+            this.toolStripSeparator3});
+      this.flatLocListContextMenu.Name = "flatLocListContextMenu";
+      this.flatLocListContextMenu.Size = new System.Drawing.Size(159, 32);
+      // 
+      // addKeywordsToFlatLocMenuItem
+      // 
+      this.addKeywordsToFlatLocMenuItem.Name = "addKeywordsToFlatLocMenuItem";
+      this.addKeywordsToFlatLocMenuItem.Size = new System.Drawing.Size(158, 22);
+      this.addKeywordsToFlatLocMenuItem.Text = "Add keywords...";
+      this.addKeywordsToFlatLocMenuItem.Click += new System.EventHandler(this.addKeywordsToFlatListLoc_Click);
+      // 
+      // toolStripSeparator3
+      // 
+      this.toolStripSeparator3.Name = "toolStripSeparator3";
+      this.toolStripSeparator3.Size = new System.Drawing.Size(155, 6);
       // 
       // MainWindow
       // 
@@ -262,7 +321,9 @@
       this.Controls.Add(this.locTree);
       this.Name = "MainWindow";
       this.Text = "Location Editor";
-      this.keywordContextMenu.ResumeLayout(false);
+      this.addKeywordContextMenu.ResumeLayout(false);
+      this.keywordListContextMenu.ResumeLayout(false);
+      this.flatLocListContextMenu.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -288,9 +349,16 @@
         private System.Windows.Forms.Button mergeChildrenToParentButton;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ListBox keywordListBox;
-        private System.Windows.Forms.ContextMenuStrip keywordContextMenu;
+        private System.Windows.Forms.ContextMenuStrip addKeywordContextMenu;
         private System.Windows.Forms.ToolStripMenuItem addKeywordMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-    }
+        private System.Windows.Forms.ContextMenuStrip keywordListContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem addKeywordToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteKeywordToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+    private System.Windows.Forms.ContextMenuStrip flatLocListContextMenu;
+    private System.Windows.Forms.ToolStripMenuItem addKeywordsToFlatLocMenuItem;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+  }
 }
 
