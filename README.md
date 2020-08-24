@@ -3,7 +3,7 @@ Tool to help with quickly editing location hierarchies for a Skyrim mod.
 
 **IMPORTANT**
 
-This tool relies on data exported from xEdit in a specific format. Specifically, it requires a text file containing locations where each line in the file has the form ID and editor ID of a location in the following format:
+This tool relies on data exported from xEdit in a specific format. Specifically, it requires a text file containing locations where each line in the file has the form ID and editor ID of a location in the following format (see Preparing data later in this README):
 
 `<Form ID>;<Editor ID>`
 
@@ -18,6 +18,26 @@ While you _can_ save your work and pick up again where you left off, this tool a
 - Edit location-cell associations
 
 - Edit location keywords
+
+# Preparing data
+
+## You've got cells but no locations
+
+You've got a good bit of work to start with then.
+
+1. Export the editor IDs of the cells and append Location to each of those.
+2. Determine where you can reduce the set of locations by combining multiple cells into one location. Delete the locations you don't need from your file.
+3. You'll probably also want to give names to those locations. Run `Skyblivion - Export names of prefiltered locations.pas` to help with that.
+4. Once you have your location editor IDs and names created, use `Skyblivion - Create Locations.pas` to actually make the records.
+
+## You've got locations but no hierarchy
+
+1. Run the script `Skyblivion - Export location Form IDs and Editor IDs.pas`, which will put the location data in the correct format to be read.
+2. Run the script `Skyblivion - Export keyword Form IDs and Editor IDs.pas` to get the keywords you need. Make sure you have selected the Keyword group in all plugins whose keywords you might want to use.
+
+## You've already created some of the hierarchy or already have some keywords assigned
+
+You'll need to create some scripts to export data from your ESP in the format that the editor utility in this repo expects. I don't have that documented, but the formats are generally pretty simple and should be easy enough to figure out by looking at the code. Unfortunately, there are no existing scripts for this part right now.
 
 # UI elements
 

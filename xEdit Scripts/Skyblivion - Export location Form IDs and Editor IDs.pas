@@ -1,5 +1,5 @@
 {
-	Script description: Creates locations for all cells
+	Script description: Creates locations form IDs and editor IDs
 }
 
 // This is the unit name that will contain all the script functions
@@ -26,7 +26,7 @@ begin
     // This was originally exporting the FixedFormID of the record, but to be
     // useful in the other scripts that this is meant to work with, it is
     // necessary to adjust them back to load-order form IDs, anyway
-    
+
     locFormId := FormID(e);
     locEdid := EditorID(e);
 
