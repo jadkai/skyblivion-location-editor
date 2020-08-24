@@ -231,12 +231,12 @@ namespace LocationParentEditor
     }
 
     /// <summary>
-    /// Handles changing the value of the "hide parented" checkbox. When this
-    /// checkbox is checked, the flat location list box doesn't show locations
-    /// that have already been assigned a parent.
+    /// Handles changing the value of the "hide locs with parents" checkbox.
+    /// When this checkbox is checked, the flat location list box doesn't show
+    /// locations that have already been assigned a parent.
     /// </summary>
 
-    private void hideParentedCheckbox_CheckedChanged(object sender, EventArgs e)
+    private void hideLocsWithParentsCheckbox_CheckedChanged(object sender, EventArgs e)
     {
       UpdateFiltering();
     }
@@ -269,24 +269,6 @@ namespace LocationParentEditor
 
         this.keywordListContextMenu.Show(this.keywordListBox.PointToScreen(e.Location));
       }
-    }
-
-    /// <summary>
-    /// Handles "load cell mappings" button.
-    /// </summary>
-
-    private void loadCellMappingsButton_Click(object sender, EventArgs e)
-    {
-      LoadCellMappings();
-    }
-
-    /// <summary>
-    /// Handles "load hierarchy" button.
-    /// </summary>
-
-    private void loadHierarchyButton_Click(object sender, EventArgs e)
-    {
-      LoadHierarchy();
     }
 
     /// <summary>
@@ -1055,7 +1037,7 @@ namespace LocationParentEditor
       this.locListBox.Items.Clear();
 
       var filteredForParenting =
-        this.hideParentedCheckbox.Checked ?
+        this.hideLocsWithParentsCheckbox.Checked ?
         this.locList.Where(edid => this.locTree.Nodes[edid] != null) :
         this.locList;
 

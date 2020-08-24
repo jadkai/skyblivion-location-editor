@@ -39,11 +39,9 @@
       this.label2 = new System.Windows.Forms.Label();
       this.setParentButton = new System.Windows.Forms.Button();
       this.filterTextBox = new System.Windows.Forms.TextBox();
-      this.hideParentedCheckbox = new System.Windows.Forms.CheckBox();
-      this.loadHierarchyButton = new System.Windows.Forms.Button();
+      this.hideLocsWithParentsCheckbox = new System.Windows.Forms.CheckBox();
       this.label3 = new System.Windows.Forms.Label();
       this.cellsTextBox = new System.Windows.Forms.TextBox();
-      this.loadCellMappingsButton = new System.Windows.Forms.Button();
       this.mergeChildrenToParentButton = new System.Windows.Forms.Button();
       this.label4 = new System.Windows.Forms.Label();
       this.keywordListBox = new System.Windows.Forms.ListBox();
@@ -148,26 +146,16 @@
       this.filterTextBox.TabIndex = 7;
       this.filterTextBox.TextChanged += new System.EventHandler(this.filterTextBox_TextChanged);
       // 
-      // hideParentedCheckbox
+      // hideLocsWithParentsCheckbox
       // 
-      this.hideParentedCheckbox.AutoSize = true;
-      this.hideParentedCheckbox.Location = new System.Drawing.Point(659, 8);
-      this.hideParentedCheckbox.Name = "hideParentedCheckbox";
-      this.hideParentedCheckbox.Size = new System.Drawing.Size(93, 17);
-      this.hideParentedCheckbox.TabIndex = 8;
-      this.hideParentedCheckbox.Text = "Hide parented";
-      this.hideParentedCheckbox.UseVisualStyleBackColor = true;
-      this.hideParentedCheckbox.CheckedChanged += new System.EventHandler(this.hideParentedCheckbox_CheckedChanged);
-      // 
-      // loadHierarchyButton
-      // 
-      this.loadHierarchyButton.Location = new System.Drawing.Point(1009, 593);
-      this.loadHierarchyButton.Name = "loadHierarchyButton";
-      this.loadHierarchyButton.Size = new System.Drawing.Size(124, 34);
-      this.loadHierarchyButton.TabIndex = 9;
-      this.loadHierarchyButton.Text = "Load hierarchy";
-      this.loadHierarchyButton.UseVisualStyleBackColor = true;
-      this.loadHierarchyButton.Click += new System.EventHandler(this.loadHierarchyButton_Click);
+      this.hideLocsWithParentsCheckbox.AutoSize = true;
+      this.hideLocsWithParentsCheckbox.Location = new System.Drawing.Point(659, 8);
+      this.hideLocsWithParentsCheckbox.Name = "hideLocsWithParentsCheckbox";
+      this.hideLocsWithParentsCheckbox.Size = new System.Drawing.Size(130, 17);
+      this.hideLocsWithParentsCheckbox.TabIndex = 8;
+      this.hideLocsWithParentsCheckbox.Text = "Hide locs with parents";
+      this.hideLocsWithParentsCheckbox.UseVisualStyleBackColor = true;
+      this.hideLocsWithParentsCheckbox.CheckedChanged += new System.EventHandler(this.hideLocsWithParentsCheckbox_CheckedChanged);
       // 
       // label3
       // 
@@ -187,16 +175,6 @@
       this.cellsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
       this.cellsTextBox.Size = new System.Drawing.Size(405, 277);
       this.cellsTextBox.TabIndex = 11;
-      // 
-      // loadCellMappingsButton
-      // 
-      this.loadCellMappingsButton.Location = new System.Drawing.Point(1009, 535);
-      this.loadCellMappingsButton.Name = "loadCellMappingsButton";
-      this.loadCellMappingsButton.Size = new System.Drawing.Size(124, 34);
-      this.loadCellMappingsButton.TabIndex = 12;
-      this.loadCellMappingsButton.Text = "Load cell mappings";
-      this.loadCellMappingsButton.UseVisualStyleBackColor = true;
-      this.loadCellMappingsButton.Click += new System.EventHandler(this.loadCellMappingsButton_Click);
       // 
       // mergeChildrenToParentButton
       // 
@@ -306,11 +284,9 @@
       this.Controls.Add(this.keywordListBox);
       this.Controls.Add(this.label4);
       this.Controls.Add(this.mergeChildrenToParentButton);
-      this.Controls.Add(this.loadCellMappingsButton);
       this.Controls.Add(this.cellsTextBox);
       this.Controls.Add(this.label3);
-      this.Controls.Add(this.loadHierarchyButton);
-      this.Controls.Add(this.hideParentedCheckbox);
+      this.Controls.Add(this.hideLocsWithParentsCheckbox);
       this.Controls.Add(this.filterTextBox);
       this.Controls.Add(this.setParentButton);
       this.Controls.Add(this.label2);
@@ -341,11 +317,9 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button setParentButton;
         private System.Windows.Forms.TextBox filterTextBox;
-        private System.Windows.Forms.CheckBox hideParentedCheckbox;
-        private System.Windows.Forms.Button loadHierarchyButton;
+        private System.Windows.Forms.CheckBox hideLocsWithParentsCheckbox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox cellsTextBox;
-        private System.Windows.Forms.Button loadCellMappingsButton;
         private System.Windows.Forms.Button mergeChildrenToParentButton;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ListBox keywordListBox;
